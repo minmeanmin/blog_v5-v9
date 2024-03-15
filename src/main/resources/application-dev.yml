@@ -3,6 +3,9 @@ server:
     encoding:
       charset: utf-8
       force: true
+    # url rewrite 문제 해결
+    session:
+      tracking-modes: cookie
   port: 8080
 
 spring:
