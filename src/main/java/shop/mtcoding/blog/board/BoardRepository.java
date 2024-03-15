@@ -46,7 +46,6 @@ public class BoardRepository {
     }
 
     public Board findById(int id) {
-        // id, title, content, user_id(이질감), created_at
         Board board = em.find(Board.class, id);
         return board;
     }
