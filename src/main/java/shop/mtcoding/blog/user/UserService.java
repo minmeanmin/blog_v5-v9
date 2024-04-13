@@ -24,10 +24,10 @@ public class UserService {
         return user;
     }
 
-    public User 회원조회(int id){
+    public UserResponse.DTO 회원조회(int id){
         User user = userJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("회원정보를 찾을 수 없습니다."));
-        return user;
+        return new UserResponse.DTO(user);
     }
 
     public User 로그인(UserRequest.LoginDTO reqDTO){

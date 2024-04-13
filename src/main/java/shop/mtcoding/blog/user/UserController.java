@@ -24,8 +24,8 @@ public class UserController {
     // TODO: 회원정보 조회 API 필요
     @GetMapping("/api/users/{id}")
     public ResponseEntity<?> userinfo(@PathVariable Integer id){
-        User user = userService.회원조회(id);
-        return ResponseEntity.ok(new ApiUtil(user));
+        UserResponse.DTO respDTO = userService.회원조회(id);
+        return ResponseEntity.ok(new ApiUtil(respDTO));
     }
 
     @PutMapping("/api/users/{id}")
