@@ -37,13 +37,13 @@ public class UserService {
     }
 
     @Transactional
-    public void 회원가입(UserRequest.JoinDTO reqDTO){
+    public User 회원가입(UserRequest.JoinDTO reqDTO){
         Optional<User> userOP = userJPARepository.findByUsername(reqDTO.getUsername());
 
         if (userOP.isPresent()){
             throw new Exception400("중복된 유저네임입니다.");
         }
 
-        userJPARepository.save(reqDTO.toEntity());
+        return userJPARepository.save(reqDTO.toEntity());
     }
 }

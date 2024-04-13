@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class Board {
     private String content;
 
     //@JoinColumn(name = "user_id")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user; // db -> user_id
 
@@ -31,6 +33,7 @@ public class Board {
     private Timestamp createdAt;
 
     @OrderBy("id desc")
+    @JsonIgnore
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Reply> replies = new ArrayList<>();
 
