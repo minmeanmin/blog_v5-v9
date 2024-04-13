@@ -117,4 +117,18 @@ public class BoardJPARepositoryTest {
 
     }
 
+    @Test
+    public void findAllWithReplyCount_test(){
+        // given
+
+        // when
+        List<BoardResponse.CountDTO> boardCountDTOList = boardJPARepository.findAllWithReplyCount();
+
+        // eye
+        System.out.println("findAllWithReplyCount_test : " + boardCountDTOList);
+
+        // then
+        Assertions.assertThat(boardCountDTOList.getLast().getReplyCount()).isEqualTo(3);
+    }
+
 }
