@@ -3,8 +3,10 @@ package shop.mtcoding.blog.board;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import shop.mtcoding.blog.user.User;
 
 @RequiredArgsConstructor // final이 붙은 친구들의 생성자를 만들어줘
@@ -20,14 +22,14 @@ public class BoardController {
 
     // TODO: 글 상세 보기 API 필요
 
-    @PostMapping("/board/save")
+    @PostMapping("/api/boards")
     public String save(BoardRequest.SaveDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         boardService.글쓰기(reqDTO, sessionUser);
         return "redirect:/";
     }
 
-    @PostMapping("/board/{id}/update")
+    @PutMapping("/api/boards/{id}")
     public String update(@PathVariable Integer id, BoardRequest.UpdateDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         boardService.글수정(id, sessionUser.getId(), reqDTO);
@@ -35,7 +37,7 @@ public class BoardController {
     }
 
 
-    @PostMapping("/board/{id}/delete")
+    @DeleteMapping("/api/boards/{id}")
     public String delete(@PathVariable Integer id) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         boardService.글삭제(id, sessionUser.getId());
