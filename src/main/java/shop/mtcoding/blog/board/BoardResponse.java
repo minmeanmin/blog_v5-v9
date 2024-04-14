@@ -9,6 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardResponse {
+
+    @Data
+    public static class DTO {
+        private int id;
+        private String title;
+        private String content;
+
+        public DTO(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+        }
+    }
+
     @Data
     public static class MainDTO{
         private int id;
