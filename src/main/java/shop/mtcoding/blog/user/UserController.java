@@ -21,7 +21,6 @@ public class UserController {
     private final UserService userService;
     private final HttpSession session;
 
-    // TODO: 회원정보 조회 API 필요
     @GetMapping("/api/users/{id}")
     public ResponseEntity<?> userinfo(@PathVariable Integer id){
         UserResponse.DTO respDTO = userService.회원조회(id);
@@ -30,23 +29,23 @@ public class UserController {
 
     @PutMapping("/api/users/{id}")
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody UserRequest.UpdateDTO reqDTO) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        User newSessionUser = userService.회원수정(sessionUser.getId(), reqDTO);
+        SessionUser sessionUser = (SessionUser) session.getAttribute("sessionUser");
+        SessionUser newSessionUser = userService.회원수정(sessionUser.getId(), reqDTO);
         session.setAttribute("sessionUser", newSessionUser);
-        return ResponseEntity.ok(new ApiUtil(newSessionUser));
+        UserResponse.DTO respDTO = userService.회원조회(newSessionUser.getId());
+        return ResponseEntity.ok(new ApiUtil(respDTO));
     }
 
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody UserRequest.JoinDTO reqDTO) {
-        User user = userService.회원가입(reqDTO);
-        return ResponseEntity.ok(new ApiUtil(user));
+        UserResponse.DTO respDTO = userService.회원가입(reqDTO);
+        return ResponseEntity.ok(new ApiUtil(respDTO));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginDTO reqDTO) {
-        User sessionUser = userService.로그인(reqDTO);
-        session.setAttribute("sessionUser", sessionUser);
-        return ResponseEntity.ok(new ApiUtil(null));
+        String jwt = userService.로그인(reqDTO);
+        return ResponseEntity.ok().header("Authorization", "Bearer "+jwt).body(new ApiUtil(null));
     }
 
     @GetMapping("/logout")

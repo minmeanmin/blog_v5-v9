@@ -1,23 +1,22 @@
 package shop.mtcoding.blog.board;
 
-import jakarta.persistence.Transient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
-import shop.mtcoding.blog.reply.Reply;
 import shop.mtcoding.blog.reply.ReplyJPARepository;
+import shop.mtcoding.blog.user.SessionUser;
 import shop.mtcoding.blog.user.User;
+import shop.mtcoding.blog.user.UserJPARepository;
 
 import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 public class BoardService {
     private final BoardJPARepository boardJPARepository;
-    private final ReplyJPARepository replyJPARepository;
+    private final UserJPARepository userJPARepository;
 
     public BoardResponse.DTO 글조회(int boardId){
         Board board = boardJPARepository.findById(boardId)
@@ -39,8 +38,10 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponse.DTO 글쓰기(BoardRequest.SaveDTO reqDTO, User sessionUser){
-        Board board = boardJPARepository.save(reqDTO.toEntity(sessionUser));
+    public BoardResponse.DTO 글쓰기(BoardRequest.SaveDTO reqDTO, SessionUser sessionUser){
+        User user = userJPARepository.findById(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("존재하지 않는 계정입니다."));
+        Board board = boardJPARepository.save(reqDTO.toEntity(user));
         return new BoardResponse.DTO(board);
     }
 
@@ -62,15 +63,13 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponse.DetailDTO 글상세보기(int boardId, User sessionUser){
-//        // Board, User (bw)
-//        Board board = boardJPARepository.findByIdJoinUser(boardId)
-//                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-//
-//        // List<Reply> + User (rw)
-//        List<Reply> replyList = replyJPARepository.findByBoardIdJoinUser(boardId);
-        Board board = boardJPARepository.findDetail(boardId); // 한방 쿼리
-        return new BoardResponse.DetailDTO(board, sessionUser);
+    public BoardResponse.DetailDTO 글상세보기(int boardId, SessionUser sessionUser){
+        Board board = boardJPARepository.findByIdJoinUser(boardId)
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
+        User user = userJPARepository.findById(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("존재하지 않는 계정입니다.")); // 자체비교
+
+        return new BoardResponse.DetailDTO(board, user);
     }
 
 }
